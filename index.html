@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GeoAid - Crisis Map Demo</title>
+    <meta charset="utf-8" />
+    <style>
+      #map {
+        height: 100vh;
+        width: 100%;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script>
+      let map;
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 17.385, lng: 78.4867 }, // Hyderabad
+          zoom: 12,
+          mapTypeId: "roadmap",
+        });
+
+        // Relief Center Marker
+        const reliefMarker = new google.maps.Marker({
+          position: { lat: 17.400, lng: 78.480 },
+          map,
+          title: "Relief Center - Kukatpally",
+        });
+
+        // Simulated Crisis Zone as Heatmap
+        const heatmapData = [
+          new google.maps.LatLng(17.385, 78.4867),
+          new google.maps.LatLng(17.380, 78.490),
+          new google.maps.LatLng(17.375, 78.480),
+          new google.maps.LatLng(17.390, 78.475),
+        ];
+
+        const heatmap = new google.maps.visualization.HeatmapLayer({
+          data: heatmapData,
+          radius: 40,
+        });
+
+        heatmap.setMap(map);
+
+        // Simulated Directions
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(map);
+
+        const request = {
+          origin: { lat: 17.395, lng: 78.450 },
+          destination: { lat: 17.400, lng: 78.480 },
+          travelMode: "DRIVING",
+        };
+
+        directionsService.route(request, (result, status) => {
+          if (status === "OK") {
+            directionsRenderer.setDirections(result);
+          }
+        });
+      }
+    </script>
+
+    <!-- Google Maps JS API -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcJNXcH8IuONz1Fr0eRKtQfV2YnUjcYcQ&libraries=visualization&callback=initMap"
+      async
+      defer
+    ></script>
+  </body>
+</html>
